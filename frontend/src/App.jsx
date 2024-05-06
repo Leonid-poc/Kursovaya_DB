@@ -1,14 +1,17 @@
-import { Map } from "./Map";
+import Map from "./Map";
 
 function App() {
 
-  return <>
+  return (
     <div className="App">
-      <div className="Map">
-        <Map />
+      <div className="buttons">
+        <input type="button" value="test" className="element-map"/>
+        <input type="button" value="test1" className="element-map"/>
+        <input type="button" value="test2" className="element-map"/>
       </div>
+      <Map/>
     </div>
-  </>
+  )
 }
 
 export default App;
