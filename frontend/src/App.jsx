@@ -1,15 +1,15 @@
+import { useState } from "react";
 import Map from "./Map";
+import Panel from "./Panel";
 
 function App() {
-
+  const [mode, setMode] = useState("none");
   return (
     <div className="App">
-      <div className="buttons">
-        <input type="button" value="test" className="element-map"/>
-        <input type="button" value="test1" className="element-map"/>
-        <input type="button" value="test2" className="element-map"/>
-      </div>
-      <Map/>
+
+      <Panel setMode={setMode}/>
+      <Map mode={mode}/>
+      
     </div>
   )
 }
