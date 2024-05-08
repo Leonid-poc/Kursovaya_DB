@@ -29,7 +29,7 @@
             min-width: fit-content;
             width: 32%;
         }
-        .EditPoligonLines {
+        .settings {
             display: flex;
             flex-flow: row wrap;
             justify-content: space-around;
@@ -53,9 +53,10 @@ input {
     border-radius: 1em;
     outline: none;
     border: 1px solid #82d8eb;
-    transition: all 500ms ease-in-out;
+    transition: all 200ms ease-in-out;
 }
 
 input:hover {
+    font-weight: bold;
     box-shadow: 0 0 1em #82d8eb;
 }
