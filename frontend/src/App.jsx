@@ -8,7 +8,7 @@ function App() {
     <div className="App">
 
       <Panel setMode={setMode}/>
-      <Map mode={mode}/>
+      <Map mode={mode} setMode={setMode}/>
       
     </div>
   )

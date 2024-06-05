@@ -1,5 +1,5 @@
 from sqlalchemy import (
-    Table, Column, Integer, ForeignKey, MetaData, VARCHAR, Text, Boolean, TIMESTAMP
+    Table, Column, Integer, ForeignKey, MetaData, VARCHAR, TIMESTAMP
 )
 
 """
@@ -48,6 +48,7 @@ route = Table(
     ts_meta,
     Column("id", Integer, autoincrement=True, primary_key=True),
     Column("bs_id", Integer, ForeignKey(bs.c.id)),
+    Column("ts_id", Integer, ForeignKey(ts.c.id)),
     Column("number", Integer, nullable=False),
     Column("interval", Integer, nullable=False)
 )

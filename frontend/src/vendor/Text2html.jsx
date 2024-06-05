@@ -7,19 +7,19 @@ import NextEdit from "../components/Edit/NextEdit";
 import ApplyBS from "../components/BS/ApplyBS";
 import CancelBS from "../components/BS/CancelBS";
 import ApplyDel from "../components/DelConn/ApplyDel";
-import CancelDelConn from "../components/DelConn/CancelDelConn";
 
 import PropTypes from 'prop-types'
 import { useState } from "react";
 import DelBS from "../components/BS/DelBS";
 
-const Text2html = ({mode}) => {
+// eslint-disable-next-line react/prop-types
+const Text2html = ({mode, setGlobalCoordsBS, globalCoordsBS, setGlobalLines}) => {
   const [coordsBS, setCoordsBS] = useState([]);
   switch (mode) {
-    case "AddBS": return <AddBS coords={coordsBS} setCoords={setCoordsBS}/>
-    case "ApplyBS": return <ApplyBS coords={coordsBS} setCoords={setCoordsBS}/>
-    case "CancelBS": return <CancelBS coords={coordsBS} setCoords={setCoordsBS}/>
-    case "DelBS": return <DelBS coords={coordsBS} setCoords={setCoordsBS}/>
+    case "AddBS": return <AddBS coords={coordsBS} setCoords={setCoordsBS} mode={mode}/>
+    case "ApplyBS": return <ApplyBS coords={coordsBS} globalCoordsBS={globalCoordsBS} setCoords={setCoordsBS} mode={mode} setGlobalCoordsBS={setGlobalCoordsBS}/>
+    case "CancelBS": return <CancelBS coords={coordsBS} setCoords={setCoordsBS} mode={mode}/>
+    case "DelBS": return <DelBS coords={coordsBS} setCoords={setCoordsBS} mode={mode}/>
 
     case "ApplyEdit": return <ApplyEdit/>
     case "CancelEdit": return <CancelEdit/>
@@ -28,7 +28,6 @@ const Text2html = ({mode}) => {
 
     case "DelConn": return <DelConn/>
     case "ApplyDel": return <ApplyDel/>
-    case "CancelDelConn": return <CancelDelConn/>
   }
   return <></>
 }

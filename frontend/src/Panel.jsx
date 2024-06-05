@@ -8,15 +8,14 @@ const Panel = ({setMode}) => {
 
     const handleDel = () => {
         if (!isDelConn) setMode("DelConn");
-        else setMode("CancelDelConn");
+        else setMode("ApplyDel");
         setIsAddingBS(false);
         setIsEditPolyline(false);
         setIsDelConn(!isDelConn);
     }
 
-    const handleAdd = () => {
-        if (!isAddingBS) setMode("AddBS");
-        else setMode("CancelBS");
+    const handleAdd = (word) => {
+        setMode(word);
         setIsAddingBS(!isAddingBS);
         setIsEditPolyline(false);
         setIsDelConn(false);
@@ -32,11 +31,11 @@ const Panel = ({setMode}) => {
   return (
     <div className="buttons">
         {!isAddingBS ?
-        (<input type="button" value="Добавить остановку" className={"element-map " + (isAddingBS && "hideButton")} onClick={handleAdd}/>) :
+        (<input type="button" value="Добавить остановку" className={"element-map " + (isAddingBS && "hideButton")} onClick={() => {handleAdd("AddBS")}}/>) :
         (<div className='AddBS settings'>
-            <input type="button" value="Подтвердить" className='element-map' onClick={() => {setMode("ApplyBS")}}/>
+            <input type="button" value="Подтвердить" className='element-map' onClick={() => {handleAdd("ApplyBS")}}/>
             <input type="button" value="Удалить выбранное" className='element-map' onClick={() => {setMode("DelBS")}}/>
-            <input type="button" value="Отменить" className='element-map' onClick={handleAdd}/>
+            <input type="button" value="Отменить" className='element-map' onClick={() => {handleAdd("CancelBS")}}/>
         </div>)
         }
         
@@ -44,7 +43,7 @@ const Panel = ({setMode}) => {
             (<input type="button" value="Соеденить остановки" className="element-map" onClick={handleEdit}/>) :
             (<div className='EditPoligonLines settings'>
                 <input type="button" value="Сделать следующее соединение" onClick={() => {setMode("NextEdit")}}/>
-                <input type="button" value="Применить" onClick={() => {setMode("ApplyEdit")}}/>
+                <input type="button" value="Сохранить в БД" onClick={() => {setMode("ApplyEdit")}}/>
                 <input type="button" value="Отменить" onClick={handleEdit}/>
             </div>)
         }
@@ -52,8 +51,7 @@ const Panel = ({setMode}) => {
         {!isDelConn ?
             (<input type="button" value="Удалить соединения" className="element-map" onClick={handleDel}/>) :
             (<div className='DelConn settings'>
-                <input type="button" value="Подтвердить" className='element-map' onClick={() => {setMode("ApplyDel")}}/>
-                <input type="button" value="Отменить" className='element-map' onClick={handleDel}/>
+                <input type="button" value="Сохранить в БД" className='element-map' onClick={handleDel}/>
             </div>)
         }
     </div>
