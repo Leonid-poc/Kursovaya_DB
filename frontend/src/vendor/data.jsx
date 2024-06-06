@@ -2,10 +2,13 @@ import axios from "axios";
 
 const SITE_BACK = "http://localhost:8000";
 
-const sendData = (BS, lines) => {
+const updRoute = (BS, lines) => {
     // TODO: here you connect with backend
-    axios.get(SITE_BACK + "/api/get_brand_ts", {headers: {"accepts":"application/json"}}).then(data => console.log(data))
+    axios.post(SITE_BACK + "/api/add_route", {data: lines}).then(data => console.log(data))
+}
 
+const getRoute = () => {
+    return axios.get(SITE_BACK + "/api/get_route").then(data => data);
 }
 
 const getBS = () => {
@@ -13,13 +16,9 @@ const getBS = () => {
 }
 
 const updBS = (coords) => {
-    axios.post(SITE_BACK + "/api/edit_bs", {headers: {"accepts":"application/json"}, data: coords}).then(data => console.log(data))
-    // console.log(coords);
-    // for (const i in coords) {
-    //     let e = coords[i];
-    //     console.log(e);
-    // }
+    axios.post(SITE_BACK + "/api/edit_bs", {data: coords}).then(data => console.log(data))
+
 }
 
 
-export {sendData, getBS, updBS};
+export {updRoute, getBS, updBS, getRoute};

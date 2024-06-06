@@ -1,3 +1,4 @@
 ./alembic.ini
 ./poetry.lock
 */__pycache__
+./migrations/versions

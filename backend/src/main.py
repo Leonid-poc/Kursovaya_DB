@@ -7,6 +7,7 @@ from transport.schema import *
 from transport.models import *
 import uvicorn, asyncpg
 from typing import Dict, Any
+from random import choice, randint
 
 app = FastAPI(title="Leonid Project")
 
@@ -65,19 +66,58 @@ async def add_ts(request: TSCreate):
 
 
 #-------------------------------Route------------------------------#
+def get_random_color() -> str:
+    return "rgb(" + ", ".join([str(randint(0, 200)) for _ in "..."]) + ")"
+
 @app.get("/api/get_route")
-async def get_route() -> list[RouteRead]:
-    return await database.fetch_all(route.select())
+async def get_route():
+    data = []
+    for i in await database.fetch_all(route.select()):
+        elem = dict()
+        elem["route"] = i["number"]
+        elem["color"] = {"color": get_random_color(), "weight": 5}
+        elem["coords"] = []
+        for j in i["interval"].split("-"):
+            obshee = j.split(";")
+            a = obshee[0]
+            b = obshee[1]
+            c = {"BS": obshee[2]}
+            elem["coords"].append([a, b, c])
+        data.append(elem)
+    return data
 
 
 @app.post("/api/add_route")
-async def add_route(request: RouteCreate):
-    query = brand_ts.insert().values(
-        bs_id=request.bs_id,
-        number=request.number,
-        interval=request.interval
-    )
-    return await database.execute(query)
+async def add_route(request: Dict[Any, Any]):
+    ts_ids = await database.fetch_all(ts.select())
+    ts_ids = list(map(lambda x: x["id"], ts_ids))
+    routes_number = await database.fetch_all(route.select())
+    routes_number = list(map(lambda x: x["number"], routes_number))
+
+    for i in request["data"]:
+        if not i['route']: continue
+        if i["route"] in routes_number:
+            routes_number = list(filter(lambda x: x != i["route"], routes_number))
+        routes = []
+        for j in i["coords"]:
+            e = str(j[0]) + ";" + str(j[1]) + ";" + j[2]["BS"]
+            routes.append(e)
+        routes = "-".join(routes)
+        bs_name = i["coords"][0][2]["BS"]
+        bs_id = await database.fetch_one(bs.select().where(bs.c.name == bs_name))
+        if await database.fetch_one(route.select().where(route.c.number == i["route"])):
+            # await database.execute(route.update().where(route.c.number == i["route"]).values(interval=routes))
+            pass
+        else:
+            await database.execute(route.insert().values(
+                bs_id=bs_id["id"],
+                number=i["route"],
+                interval=routes,
+                ts_id=choice(ts_ids)
+            ))
+    for i in routes_number:
+        await database.execute(route.delete().where(route.c.number == i))
+    return "database succesfully updated with lines!"
 
 
 #-------------------------------BS------------------------------#
@@ -106,6 +146,16 @@ async def add_bs(request: Dict[Any, Any]):
             except asyncpg.exceptions.UniqueViolationError:
                 pass
         elif i["status"] == "del":
+            for j in await database.fetch_all(route.select()):
+                if i["desc"] in j["interval"]:
+                    all_bs = j["interval"].split("-")
+                    if len(all_bs) == 1: await database.execute(route.delete().where(route.c.id == j["id"]))
+                    bs_one = await database.fetch_one(bs.select().where(bs.c.name == i["desc"]))
+                    if bs_one["id"] == j["bs_id"]:
+                        await database.execute(route.delete().where(route.c.id == j["id"]))
+                    all_bs = list(filter(lambda x: i["desc"] not in x, all_bs))
+                    all_bs = "-".join(all_bs)
+                    await database.execute(route.update().where(route.c.id == j["id"]).values(interval=all_bs))
             await database.execute(bs.delete().where(bs.c.name == i["desc"]))
 
     return await database.fetch_all(bs.select()) # database.execute(query)

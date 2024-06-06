@@ -2,7 +2,7 @@ import { MapContainer, TileLayer, Marker, Popup, Polyline } from "react-leaflet"
 import Text2html from "./vendor/Text2html";
 import "leaflet/dist/leaflet.css";
 import { useEffect, useState } from "react";
-import { getBS, sendData } from "./vendor/data";
+import { getBS, updRoute, getRoute } from "./vendor/data";
 
 const colors = [
   "#FF0000",
@@ -57,7 +57,7 @@ const colors = [
 ];
 
 // eslint-disable-next-line react/prop-types
-const Map = ({ mode, setMode }) => {
+const Map = ({ mode, setMode, globalLines, setGlobalLines }) => {
   const [staticState, _] = useState(null);
   const center = [51.77629, 55.110047];
   const [randomColor, setRandomColor] = useState({
@@ -65,6 +65,7 @@ const Map = ({ mode, setMode }) => {
     weight: 5
   });
   const [globalCoordsBS, setGlobalCoordsBS] = useState([]);
+  const [lines, setLines] = useState([]);
   useEffect(() => {
     getBS().then((data)=>{
       let e = [];
@@ -80,13 +81,21 @@ const Map = ({ mode, setMode }) => {
       console.log(e);
       setGlobalCoordsBS(e);
     })
+    getRoute().then(data => {
+      console.log(data.data);
+      setGlobalLines(data.data);
+    });
   }, [staticState])
 
-  const [globalLines, setGlobalLines] = useState([{route: "", color: randomColor, coords: []}]);
-  const [lines, setLines] = useState([]);
 
   useEffect(() => {
-    if (mode === "CancelEdit") setLines([]);
+    if (mode === "CancelEdit") {
+      setLines([]);
+      setRandomColor({
+        color: colors[Math.floor(Math.random() * colors.length)],
+        weight: 5
+      });
+    }
     if (mode === "NextEdit") {
       setRandomColor({
         color: colors[Math.floor(Math.random() * colors.length)],
@@ -97,14 +106,15 @@ const Map = ({ mode, setMode }) => {
     }
     else if (mode !== "Edit" && mode !== "NextEdit" && lines.length != 0) {
       const prom = prompt("Введите название маршрута");
-      setGlobalLines(prev => [...prev, {route: prom, color: randomColor, coords: lines}]);
+        setGlobalLines(prev => [...prev, {route: prom, color: randomColor, coords: lines}]);
       setLines([]);
     }
     if (mode === "ApplyEdit" || mode === "ApplyDel") {
+      console.log("test");
       setGlobalLines(prev => prev);
       setTimeout(() => {
-        sendData(globalCoordsBS, globalLines);
-      }, 2000)
+        updRoute(globalCoordsBS, globalLines);
+      }, 1000);
     }
   }, [mode, lines])
 

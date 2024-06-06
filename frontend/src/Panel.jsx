@@ -42,7 +42,7 @@ const Panel = ({setMode}) => {
         {!isEditPolyline ? 
             (<input type="button" value="Соеденить остановки" className="element-map" onClick={handleEdit}/>) :
             (<div className='EditPoligonLines settings'>
-                <input type="button" value="Сделать следующее соединение" onClick={() => {setMode("NextEdit")}}/>
+                {/* <input type="button" value="Сделать следующее соединение" onClick={() => {setMode("NextEdit")}}/> */}
                 <input type="button" value="Сохранить в БД" onClick={() => {setMode("ApplyEdit")}}/>
                 <input type="button" value="Отменить" onClick={handleEdit}/>
             </div>)

@@ -44,13 +44,13 @@ class BSCreate(BaseModel):
 class RouteRead(BaseModel):
     id: int
     bs_id: int
-    number: int
-    interval: int
+    number: str
+    interval: str
 
 class RouteCreate(BaseModel):
     bs_id: int
-    number: int
-    interval: int
+    number: str
+    interval: str
 
 class PlanTimeRead(BaseModel):
     id: int

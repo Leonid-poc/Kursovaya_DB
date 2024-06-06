@@ -1,5 +1,5 @@
 from sqlalchemy import (
-    Table, Column, Integer, ForeignKey, MetaData, VARCHAR, TIMESTAMP
+    Table, Column, Integer, ForeignKey, MetaData, VARCHAR, TIMESTAMP, String
 )
 
 """
@@ -38,7 +38,7 @@ bs = Table(
     "bs",
     ts_meta,
     Column("id", Integer, primary_key=True, autoincrement=True),
-    Column("name", VARCHAR(255), nullable=False),
+    Column("name", VARCHAR(255), nullable=False, unique=True),
     Column("latitude", VARCHAR(100), nullable=False), # широта
     Column("longitude", VARCHAR(100), nullable=False) # долгота
 )
@@ -49,8 +49,8 @@ route = Table(
     Column("id", Integer, autoincrement=True, primary_key=True),
     Column("bs_id", Integer, ForeignKey(bs.c.id)),
     Column("ts_id", Integer, ForeignKey(ts.c.id)),
-    Column("number", Integer, nullable=False),
-    Column("interval", Integer, nullable=False)
+    Column("number", String, nullable=False, unique=True), 
+    Column("interval", String, nullable=False)
 )
 
 plan_time = Table(
